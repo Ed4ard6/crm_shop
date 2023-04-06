@@ -13,6 +13,7 @@ def agregar_producto():
     conexion.commit()
     actualizar_productos()
 
+
 def limpiar_campos():
     print('Proceso cancelado...')
     entry_nombre.delete(0, tk.END)
