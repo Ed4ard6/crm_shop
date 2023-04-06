@@ -15,7 +15,6 @@ def agregar_producto():
 
 
 def limpiar_campos():
-    print('Proceso cancelado...')
     entry_nombre.delete(0, tk.END)
     entry_tipo.delete(0, tk.END)
     entry_cantidad.delete(0, tk.END)
