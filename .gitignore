@@ -1,0 +1,11 @@
+# Archivos de código compilado de Python
+*.pyc
+
+# Directorio de entorno virtual
+venv/
+
+# Archivos de registro
+*.log
+
+# Archivos de caché
+__pycache__/

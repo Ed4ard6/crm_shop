@@ -39,6 +39,10 @@ def new_enable():
     button_agregar.configure(state=tk.NORMAL)
     button_cancelar.configure(state=tk.NORMAL)
 
+    button_nuevo.configure(state=tk.DISABLED)
+    button_actualizar.configure(state=tk.DISABLED)
+    button_eliminar.configure(state=tk.DISABLED)
+
     
 def new_disable():
     # Ocultar los widgets de entrada después de guardar un producto
@@ -54,6 +58,11 @@ def new_disable():
 
     button_agregar.configure(state=tk.DISABLED)
     button_cancelar.configure(state=tk.DISABLED)
+
+    #habilita los botones de nuevo, Actualizar, Eliminar
+    button_nuevo.configure(state=tk.NORMAL)
+    button_actualizar.configure(state=tk.NORMAL)
+    button_eliminar.configure(state=tk.NORMAL)
 
 
 def eliminar_producto():
@@ -80,27 +89,39 @@ def actualizar_productos():
         precio_venta = producto[4] * 1.2
         lista_productos.insert(tk.END, f"ID: {producto[0]}, Nombre: {producto[1]} -- Tipo: {producto[2]} -- Cantidad: {producto[3]} -- Precio de compra: {producto[4]:.2f} -- Precio de venta: {precio_venta:.2f}")
 
+def mostrar_formulario_emergente():
+    
+    formulario_emergente = tk.Toplevel()
+    # Agrega los widgets del formulario emergente aquí
+    boton_regresar = tk.Button(formulario_emergente, text="Regresar", command=formulario_emergente.destroy)
+    boton_regresar.pack()
+    formulario_emergente.grab_set()
+    formulario_emergente.wait_window()
+    ventana_principal.deiconify()  # Esto volverá a mostrar la ventana principal cuando se cierre el formulario emergente
+
+
 # Crear la ventana principal
-ventana = tk.Tk()
-ventana.title("Inventario Eduardo")
+ventana_principal = tk.Tk()
+ventana_principal.title("Inventario Eduardo")
 
 # Crear los widgets de la GUI
-label_nombre = tk.Label(ventana, text="Nombre:")
-entry_nombre = tk.Entry(ventana)
-label_tipo = tk.Label(ventana, text="Tipo:")
-entry_tipo = tk.Entry(ventana)
-label_cantidad = tk.Label(ventana, text="Cantidad:")
-entry_cantidad = tk.Entry(ventana)
-label_precio = tk.Label(ventana, text="Precio de compra:")
-entry_precio = tk.Entry(ventana)
-button_agregar = tk.Button(ventana, text="Guardar", command=agregar_producto)
-button_cancelar = tk.Button(ventana, text="Cancelar", command=limpiar_campos)
-button_eliminar = tk.Button(ventana, text="Eliminar", command=eliminar_producto)
-button_nuevo = tk.Button(ventana, text="Nuevo", command=new_enable)
-button_actualizar = tk.Button(ventana, text="Actualizar", command=eliminar_producto)
-lista_productos = tk.Listbox(ventana, height=10, width=100)
+label_nombre = tk.Label(ventana_principal, text="Nombre:")
+entry_nombre = tk.Entry(ventana_principal)
+label_tipo = tk.Label(ventana_principal, text="Tipo:")
+entry_tipo = tk.Entry(ventana_principal)
+label_cantidad = tk.Label(ventana_principal, text="Cantidad:")
+entry_cantidad = tk.Entry(ventana_principal)
+label_precio = tk.Label(ventana_principal, text="Precio de compra:")
+entry_precio = tk.Entry(ventana_principal)
+button_agregar = tk.Button(ventana_principal, text="Guardar", command=agregar_producto)
+button_cancelar = tk.Button(ventana_principal, text="Cancelar", command=limpiar_campos)
+button_eliminar = tk.Button(ventana_principal, text="Eliminar", command=eliminar_producto)
+button_eliminar = tk.Button(ventana_principal, text="Facturas", command=eliminar_producto)
+button_nuevo = tk.Button(ventana_principal, text="Nuevo", command=new_enable)
+button_actualizar = tk.Button(ventana_principal, text="Actualizar", command=eliminar_producto)
+lista_productos = tk.Listbox(ventana_principal, height=10, width=100)
 
-# Ubicar los widgets en la ventana
+# Ubicar los widgets en la ventana_principal
 label_nombre.grid(row=0, column=0)
 entry_nombre.grid(row=0, column=1)
 label_tipo.grid(row=1, column=0)
@@ -124,4 +145,4 @@ new_disable()
 actualizar_productos()
 
 # Ejecutar la aplicación
-ventana.mainloop()
+ventana_principal.mainloop()
