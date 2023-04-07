@@ -53,51 +53,12 @@ def close_modal_new_product(ventana_emergente : tk.Toplevel):
     actualizar_productos(lista_productos)
     habilitar_botones()
 
-
-
-
-
-
-
-
-def habilitar_insert():
-    # Fcuncion para Habilitar los formularios de agregar productos
-    """ entry_nombre.configure(state=tk.NORMAL)
-    entry_categoria.configure(state=tk.NORMAL)
-    entry_cantidad.configure(state=tk.NORMAL)
-    entry_precio.configure(state=tk.NORMAL)
-
-    label_nombre.configure(state=tk.NORMAL)
-    label_categoria.configure(state=tk.NORMAL)
-    label_cantidad.configure(state=tk.NORMAL)
-    label_precio.configure(state=tk.NORMAL)
-
-    button_agregar.configure(state=tk.NORMAL)
-    button_cancelar.configure(state=tk.NORMAL) """
-
-    #habilita los botones de nuevo, Actualizar, Eliminar
-    # button_nuevo.configure(state=tk.DISABLED)
-    # button_actualizar.configure(state=tk.DISABLED)
-    # button_eliminar.configure(state=tk.DISABLED)
-
-#def desabilitar_insert():
-    # Fcuncion para desabilidar los formularios de agregar productos
-
-   
-
-
-
 # Crear la ventana principal
 ventana_principal = tk.Tk()
 ventana_principal.title("Inventario number 2")
 
 
 # Crear los widgets de la GUI
-
-
-#para los margin untilizamos pad y el eje ya sea x o, =seguido del numero de pixeles, y para los pading utilizamos los ipad
-#para alinear utilizamos side=tk.left       ejemplo entry_name.pack(side=tk.left)
-
 botones = {
     "eliminar": tk.Button(ventana_principal, text="Eliminar", command=""),
     "facturas": tk.Button(ventana_principal, text="Facturas", command=""),
@@ -110,18 +71,11 @@ button_actualizar = botones["actualizar"]
 button_eliminar = botones["eliminar"]
 lista_productos = tk.Listbox(ventana_principal, height=10, width=100)
 
-
-
 # Ubicar los widgets en la ventana_principal
-
 button_nuevo.grid(row=6, column=0)
 button_actualizar.grid(row=6, column=1)
 button_eliminar.grid(row=6, column=2)#, columnspan=2-- Esto es para dejar uin esacio para ubicar mejor los botones
 lista_productos.grid(row=8, column=0, columnspan=3)
-
-
-#desabilita el formulario de insercion al inicio de la aplicacion
-
 
 # Actualizar la lista de productos al inicio de la aplicación
 actualizar_productos(lista_productos)
