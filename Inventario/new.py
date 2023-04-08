@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import *
-from funciones import actualizar_productos, limpiar_campos, agregar_producto, crear_factura, agregar_productos
+from funciones import actualizar_productos, limpiar_campos, agregar_producto, crear_factura, agregar_detalles_factura, limpiar_formulario_detalles_fatura, activar_factura
 from conexion_2 import conexion, cursor
 
 
@@ -70,14 +70,14 @@ def ventana_facturas():
     ventana_emergente = tk.Toplevel(ventana_principal)
     ventana_emergente.title("Registrar Factura")
     ventana_emergente.geometry("300x350")
-    #crear_factura()
+    crear_factura()
 
     lista_de_productos = OptionMenu(ventana_emergente, var_seleccion, *diccionario.keys())
     label_producto = tk.Label(ventana_emergente, text="Producto:")
     label_cantidad = tk.Label(ventana_emergente, text="Cantidad:")
     entry_cantidad = tk.Entry(ventana_emergente)
     
-    button_agregar = tk.Button(ventana_emergente, text="Guardar", command = lambda :agregar_productos(var_seleccion, entry_cantidad, diccionario))
+    button_agregar = tk.Button(ventana_emergente, text="Agregar", command=lambda: [agregar_detalles_factura(var_seleccion, entry_cantidad, diccionario), limpiar_formulario_detalles_fatura(var_seleccion, entry_cantidad)])
 
     #Establecemos la posicion de cada componente de la ventana
     label_producto.grid(row=0, column=0)
@@ -87,14 +87,20 @@ def ventana_facturas():
     
     button_agregar.grid(row=6, column=0)
 
-    boton_regresar = tk.Button(ventana_emergente, text="Finalizar", command= lambda: close_modal_new_product(ventana_emergente))
-    boton_regresar.grid(row=6, column=1)
+    boton_finalizar = tk.Button(ventana_emergente, text="Finalizar", command= lambda: boton_finalizar_factura(ventana_emergente))
+    boton_finalizar.grid(row=6, column=1)
 
 
 def close_modal_new_product(ventana_emergente : tk.Toplevel):
     ventana_emergente.destroy()
     actualizar_productos(lista_productos)
     habilitar_botones()
+
+def boton_finalizar_factura(ventana_emergente : tk.Toplevel):
+    ventana_emergente.destroy()
+    actualizar_productos(lista_productos)
+    habilitar_botones()
+    activar_factura()
 
 def agregar_limpiar():
     agregar_producto()

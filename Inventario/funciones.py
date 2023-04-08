@@ -2,7 +2,11 @@ import tkinter as tk
 from conexion_2 import conexion, cursor
 import datetime
 
-def agregar_productos(var_seleccion, entry_cantidad, diccionario):
+def limpiar_formulario_detalles_fatura(var_seleccion, entry_cantidad):
+    var_seleccion.set("")  # limpia la opción seleccionada en la lista de productos
+    entry_cantidad.delete(0, tk.END)  # limpia el campo de entrada de cantidad
+
+def agregar_detalles_factura(var_seleccion, entry_cantidad, diccionario):
     id_factura = ultima_factura()
     nombre_producto = var_seleccion.get()
     id_producto = diccionario[nombre_producto]
@@ -10,10 +14,10 @@ def agregar_productos(var_seleccion, entry_cantidad, diccionario):
     precio_venta = precio_producto(id_producto)
     total = precio_venta * int(cantidad)
     print(f'El precio de venta es: {precio_venta}---- Se agregaron {cantidad} unidades de {nombre_producto} (ID: {id_producto}) y el total es {total}')
-    # datos = ( id_factura, id_producto, cantidad, precio_venta, total)
-    # insert = "INSERT INTO det_factura (id_factura, id_producto, cantidad, precio_venta, total) VALUES (%s, %s, %s, %s, %s)"
-    # cursor.execute(insert, datos)
-    # conexion.commit()
+    datos = ( id_factura, id_producto, cantidad, precio_venta, total)
+    insert = "INSERT INTO det_factura (id_factura, id_producto, cantidad, precio_venta, total) VALUES (%s, %s, %s, %s, %s)"
+    cursor.execute(insert, datos)
+    conexion.commit()
 
 def precio_producto(id_producto):
     dato = id_producto
@@ -24,17 +28,39 @@ def precio_producto(id_producto):
         return precio_de_venta[0]
 
     
-
+agregar_detalles_factura
 #creamos la factura
 def crear_factura():
     #Aqui sabemos las fecha de hoy para guardarlo en la factura
     fecha_hoy = datetime.date.today()
-    estado = "Intermedio"
+    estado = "Sin finalizar"
     total = 0
     datos = (fecha_hoy, estado, total)
     insert= "INSERT INTO facturas (fecha, estado, total) VALUES (%s, %s, %s)"
     cursor.execute(insert, datos)
     conexion.commit()
+
+def total_factura():
+    id = ultima_factura()
+    datos =(id,)
+    consulta= "SELECT SUM(total) FROM det_factura WHERE id_factura = %s"
+    cursor.execute(consulta, datos)
+    total_factura = cursor.fetchone()
+    # conexion.close()
+    if total_factura is not None:
+        return total_factura[0]
+    conexion.commit()
+
+def activar_factura():
+    id_factura = ultima_factura()
+    estado = "Activa"
+    total = total_factura()
+    datos = (estado, total, id_factura)
+    update = "UPDATE facturas SET estado = %s, total = %s WHERE id = %s;"
+    cursor.execute(update, datos)
+    conexion.commit()
+    print("Factura Actualizada")
+
 
 
 def ultima_factura():
