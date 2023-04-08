@@ -1,6 +1,50 @@
 import tkinter as tk
 from conexion_2 import conexion, cursor
+import datetime
 
+def agregar_productos(var_seleccion, entry_cantidad, diccionario):
+    id_factura = ultima_factura()
+    nombre_producto = var_seleccion.get()
+    id_producto = diccionario[nombre_producto]
+    cantidad = entry_cantidad.get()
+    precio_venta = precio_producto(id_producto)
+    total = precio_venta * int(cantidad)
+    print(f'El precio de venta es: {precio_venta}---- Se agregaron {cantidad} unidades de {nombre_producto} (ID: {id_producto}) y el total es {total}')
+    # datos = ( id_factura, id_producto, cantidad, precio_venta, total)
+    # insert = "INSERT INTO det_factura (id_factura, id_producto, cantidad, precio_venta, total) VALUES (%s, %s, %s, %s, %s)"
+    # cursor.execute(insert, datos)
+    # conexion.commit()
+
+def precio_producto(id_producto):
+    dato = id_producto
+    consulta = f"SELECT precio_venta FROM producto WHERE id = {dato}"
+    cursor.execute(consulta)
+    precio_de_venta = cursor.fetchone()
+    if precio_de_venta is not None:
+        return precio_de_venta[0]
+
+    
+
+#creamos la factura
+def crear_factura():
+    #Aqui sabemos las fecha de hoy para guardarlo en la factura
+    fecha_hoy = datetime.date.today()
+    estado = "Intermedio"
+    total = 0
+    datos = (fecha_hoy, estado, total)
+    insert= "INSERT INTO facturas (fecha, estado, total) VALUES (%s, %s, %s)"
+    cursor.execute(insert, datos)
+    conexion.commit()
+
+
+def ultima_factura():
+    consulta= "SELECT id FROM facturas ORDER by id DESC LIMIT 1"
+    cursor.execute(consulta)
+    resultado = cursor.fetchone()
+    # conexion.close()
+    if resultado is not None:
+        return resultado[0]
+    conexion.commit()
 
 def agregar_producto(entry_nombre : tk.Entry, entry_categoria : tk.Entry,entry_cantidad : tk.Entry, entry_precio : tk.Entry):
 
@@ -47,4 +91,4 @@ def actualizar_productos(lista_productos):
     lista_productos.delete(0, tk.END)
     for producto in resultados:
         precio_venta = producto[4] * 1.2
-        lista_productos.insert(tk.END, f"ID: {producto[0]}, Nombre_producto: {producto[1]} -- cate_produc: {producto[2]} -- precio_compra: {producto[3]:.2f} -- cantidad: {producto[4]} -- precio_venta: {producto[5]} -- estado: {producto[6]}")
+        lista_productos.insert(tk.END, f"ID: {producto[0]}, Producto: {producto[1]} -- Categoria: {producto[2]} -- precio_compra: {producto[3]:.2f} -- cantidad: {producto[4]} -- precio_venta: {producto[5]} -- estado: {producto[6]}")
