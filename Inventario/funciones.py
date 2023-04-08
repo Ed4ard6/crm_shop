@@ -84,8 +84,6 @@ def agregar_producto(entry_nombre : tk.Entry, entry_categoria : tk.Entry,entry_c
     consulta = "INSERT INTO producto (nombre_producto, cate_produc, precio_compra, cantidad, 	precio_venta, estado) VALUES (%s, %s, %s, %s, %s, %s)"
     cursor.execute(consulta, datos)
     conexion.commit()
-    limpiar_campos()
-    actualizar_productos()
 
 
 def limpiar_campos(entry_nombre : tk.Entry, entry_categoria : tk.Entry,entry_cantidad : tk.Entry, entry_precio : tk.Entry, 
