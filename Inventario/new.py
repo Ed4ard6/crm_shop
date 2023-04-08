@@ -19,8 +19,8 @@ def ventana_nuevo():
     print("ventana_nuevo....")
     ventana_emergente = tk.Toplevel(ventana_principal)
     ventana_emergente.title("Registrar nuevo producto")
-    ventana_emergente.geometry("300x350")
-
+    ventana_emergente.geometry("300x250")
+    
     label_nombre = tk.Label(ventana_emergente, text="Nombre_p:")#bg= color de fondo     fg= color de letra
     entry_nombre = tk.Entry(ventana_emergente)
     label_categoria = tk.Label(ventana_emergente, text="Categoria:")
@@ -29,9 +29,10 @@ def ventana_nuevo():
     entry_cantidad = tk.Entry(ventana_emergente)
     label_precio = tk.Label(ventana_emergente, text="Precio de compra:")
     entry_precio = tk.Entry(ventana_emergente)
-    button_agregar = tk.Button(ventana_emergente, text="Guardar", command = lambda :agregar_producto(entry_nombre, entry_categoria, entry_cantidad, entry_precio))
+    button_agregar = tk.Button(ventana_emergente, text="Guardar", command = lambda :[agregar_producto(entry_nombre, entry_categoria, entry_cantidad, entry_precio), limpiar_campos(entry_nombre, entry_categoria, entry_cantidad, entry_precio)])
     boton_regresar = tk.Button(ventana_emergente, text="Finalizar", command= lambda: close_modal_new_product(ventana_emergente))
     
+    entry_nombre.focus_set()
     #Establecemos la posicion de cada componente de la ventana
     label_nombre.grid(row=0, column=0)
     entry_nombre.grid(row=0, column=1)
@@ -42,8 +43,10 @@ def ventana_nuevo():
     label_precio.grid(row=3, column=0)
     entry_precio.grid(row=3, column=1)
     button_agregar.grid(row=6, column=0)
-
     boton_regresar.grid(row=6, column=1)
+
+
+
 
 def lista_productos():
     # Obtener los datos de la tabla
@@ -70,7 +73,7 @@ def ventana_facturas():
     ventana_emergente = tk.Toplevel(ventana_principal)
     ventana_emergente.title("Registrar Factura")
     ventana_emergente.geometry("300x350")
-    crear_factura()
+    #crear_factura()
 
     lista_de_productos = OptionMenu(ventana_emergente, var_seleccion, *diccionario.keys())
     label_producto = tk.Label(ventana_emergente, text="Producto:")
@@ -84,7 +87,8 @@ def ventana_facturas():
     lista_de_productos.grid(row=0, column=1)
     label_cantidad.grid(row=1, column=0)
     entry_cantidad.grid(row=1, column=1)
-    
+    lista_de_productos.focus_set()
+
     button_agregar.grid(row=6, column=0)
 
     boton_finalizar = tk.Button(ventana_emergente, text="Finalizar", command= lambda: boton_finalizar_factura(ventana_emergente))
@@ -102,9 +106,6 @@ def boton_finalizar_factura(ventana_emergente : tk.Toplevel):
     habilitar_botones()
     activar_factura()
 
-def agregar_limpiar():
-    agregar_producto()
-    limpiar_campos()
 
 # Crear la ventana principal
 ventana_principal = tk.Tk()

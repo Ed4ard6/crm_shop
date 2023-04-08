@@ -1,0 +1,2 @@
+En la ventada_facturas tengo desabilitada la funcion de crear factura 
+ y en agregar_detalles_factura tengo desabilitada la insercion en la base de datos

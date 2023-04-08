@@ -1,6 +1,9 @@
 import tkinter as tk
+from tkinter import messagebox
 from conexion_2 import conexion, cursor
 import datetime
+
+
 
 def limpiar_formulario_detalles_fatura(var_seleccion, entry_cantidad):
     var_seleccion.set("")  # limpia la opción seleccionada en la lista de productos
@@ -14,10 +17,10 @@ def agregar_detalles_factura(var_seleccion, entry_cantidad, diccionario):
     precio_venta = precio_producto(id_producto)
     total = precio_venta * int(cantidad)
     print(f'El precio de venta es: {precio_venta}---- Se agregaron {cantidad} unidades de {nombre_producto} (ID: {id_producto}) y el total es {total}')
-    datos = ( id_factura, id_producto, cantidad, precio_venta, total)
-    insert = "INSERT INTO det_factura (id_factura, id_producto, cantidad, precio_venta, total) VALUES (%s, %s, %s, %s, %s)"
-    cursor.execute(insert, datos)
-    conexion.commit()
+    # datos = ( id_factura, id_producto, cantidad, precio_venta, total)
+    # insert = "INSERT INTO det_factura (id_factura, id_producto, cantidad, precio_venta, total) VALUES (%s, %s, %s, %s, %s)"
+    # cursor.execute(insert, datos)
+    # conexion.commit()
 
 def precio_producto(id_producto):
     dato = id_producto
@@ -39,7 +42,8 @@ def crear_factura():
     insert= "INSERT INTO facturas (fecha, estado, total) VALUES (%s, %s, %s)"
     cursor.execute(insert, datos)
     conexion.commit()
-
+    
+# Aqui buscamos el total de la ultima factura registrada
 def total_factura():
     id = ultima_factura()
     datos =(id,)
@@ -81,33 +85,18 @@ def agregar_producto(entry_nombre : tk.Entry, entry_categoria : tk.Entry,entry_c
     estado = "Disponible"
     precio_venta = precio_compra * 1.2  
     datos = (nombre_producto, cate_produc, precio_compra, cantidad, precio_venta, estado)
-    consulta = "INSERT INTO producto (nombre_producto, cate_produc, precio_compra, cantidad, 	precio_venta, estado) VALUES (%s, %s, %s, %s, %s, %s)"
-    cursor.execute(consulta, datos)
-    conexion.commit()
+    # consulta = "INSERT INTO producto (nombre_producto, cate_produc, precio_compra, cantidad, 	precio_venta, estado) VALUES (%s, %s, %s, %s, %s, %s)"
+    # cursor.execute(consulta, datos)
+    # conexion.commit()
+    messagebox.showinfo("Registro exitoso", "Producto registrado correctamente")
 
 
-def limpiar_campos(entry_nombre : tk.Entry, entry_categoria : tk.Entry,entry_cantidad : tk.Entry, entry_precio : tk.Entry, 
-                   label_categoria : tk.Label,label_nombre : tk.Label,label_cantidad : tk.Label ,label_precio : tk.Label, 
-                   button_agregar: tk.Button, button_cancelar: tk.Button, button_nuevo: tk.Button, button_actualizar: tk.Button, 
-                   button_eliminar: tk.Button):
-    
-    entry_nombre.configure(state=tk.DISABLED)
-    entry_categoria.configure(state=tk.DISABLED)
-    entry_cantidad.configure(state=tk.DISABLED)
-    entry_precio.configure(state=tk.DISABLED)
-
-    label_nombre.configure(state=tk.DISABLED)
-    label_categoria.configure(state=tk.DISABLED)
-    label_cantidad.configure(state=tk.DISABLED)
-    label_precio.configure(state=tk.DISABLED)
-
-    button_agregar.configure(state=tk.DISABLED)
-    button_cancelar.configure(state=tk.DISABLED)
-
-    # habilita los botones de nuevo, Actualizar, Eliminar
-    button_nuevo.configure(state=tk.NORMAL)
-    button_actualizar.configure(state=tk.NORMAL)
-    button_eliminar.configure(state=tk.NORMAL)
+def limpiar_campos(entry_nombre, entry_categoria, entry_cantidad, entry_precio):
+    entry_nombre.delete(0, tk.END)
+    entry_categoria.delete(0, tk.END)
+    entry_cantidad.delete(0, tk.END)
+    entry_precio.delete(0, tk.END)
+    entry_nombre.focus_set()  # Ubicar cursor en el primer campo de entrada
 
 def actualizar_productos(lista_productos):
     cursor.execute("SELECT * FROM producto")
