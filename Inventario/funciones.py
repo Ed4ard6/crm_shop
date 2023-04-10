@@ -3,6 +3,28 @@ from tkinter import messagebox
 from conexion_2 import conexion, cursor
 import datetime
 
+def validacion_cantidad_productos(var_seleccion, entry_cantidad, diccionario, detalles_de_factura):
+    nombre_producto = var_seleccion.get()
+    cantidad_ingresada = int(entry_cantidad.get())
+    id_producto = diccionario[nombre_producto]
+    consulta = f"SELECT "
+    
+    query = f"SELECT cantidad FROM producto WHERE id = {id_producto};"
+    cursor.execute(query)
+    cantidad_disponible = cursor.fetchone()[0]
+
+    if cantidad_disponible != 0:
+        if cantidad_disponible >= cantidad_ingresada: 
+            agregar_detalles_factura(var_seleccion, entry_cantidad, diccionario)
+            limpiar_formulario_detalles_fatura(var_seleccion, entry_cantidad)
+            actualizar_productos_facturas(detalles_de_factura) 
+        else:
+            messagebox.showerror("Error", f"Para {nombre_producto} solo tenemos {cantidad_disponible} unidades disponibles")
+            entry_cantidad.focus_set()
+    else:
+        messagebox.showerror("Error", f"No tenemos disponibilidad para {nombre_producto} ")
+        entry_cantidad.focus_set()
+
 
 
 def limpiar_formulario_detalles_fatura(var_seleccion, entry_cantidad):
@@ -17,10 +39,10 @@ def agregar_detalles_factura(var_seleccion, entry_cantidad, diccionario):
     precio_venta = precio_producto(id_producto)
     total = precio_venta * int(cantidad)
     print(f'El precio de venta es: {precio_venta}---- Se agregaron {cantidad} unidades de {nombre_producto} (ID: {id_producto}) y el total es {total}')
-    # datos = ( id_factura, id_producto, cantidad, precio_venta, total)
-    # insert = "INSERT INTO det_factura (id_factura, id_producto, cantidad, precio_venta, total) VALUES (%s, %s, %s, %s, %s)"
-    # cursor.execute(insert, datos)
-    # conexion.commit()
+    datos = ( id_factura, id_producto, cantidad, precio_venta, total)
+    insert = "INSERT INTO det_factura (id_factura, id_producto, cantidad, precio_venta, total) VALUES (%s, %s, %s, %s, %s)"
+    cursor.execute(insert, datos)
+    conexion.commit()
 
 def precio_producto(id_producto):
     dato = id_producto
@@ -31,7 +53,7 @@ def precio_producto(id_producto):
         return precio_de_venta[0]
 
     
-agregar_detalles_factura
+#agregar_detalles_factura#creo que esta de mas
 #creamos la factura
 def crear_factura():
     #Aqui sabemos las fecha de hoy para guardarlo en la factura
@@ -53,7 +75,23 @@ def total_factura():
     # conexion.close()
     if total_factura is not None:
         return total_factura[0]
+    
+def actualizar_cantidad_disponible(id_factura):
+    # Obtener los datos de la tabla det_factura correspondientes a la factura en cuestión
+    query = f"SELECT id_producto, cantidad FROM det_factura WHERE id_factura = {id_factura};"
+    cursor.execute(query)
+    detalles_factura = cursor.fetchall()
+
+    # Actualizar la cantidad disponible de cada producto en la tabla producto
+    for detalle in detalles_factura:
+        id_producto = detalle[0]
+        cantidad_vendida = detalle[1]
+        query = f"UPDATE producto SET cantidad = cantidad - {cantidad_vendida} WHERE id = {id_producto};"
+        cursor.execute(query)
+    
     conexion.commit()
+    print("Cantidades actulaizadas")
+
 
 def activar_factura():
     id_factura = ultima_factura()
@@ -63,7 +101,9 @@ def activar_factura():
     update = "UPDATE facturas SET estado = %s, total = %s WHERE id = %s;"
     cursor.execute(update, datos)
     conexion.commit()
-    print("Factura Actualizada")
+    print("Factura Activa")
+    actualizar_cantidad_disponible(id_factura)
+
 
 
 
@@ -74,7 +114,7 @@ def ultima_factura():
     # conexion.close()
     if resultado is not None:
         return resultado[0]
-    conexion.commit()
+
 
 def agregar_producto(entry_nombre : tk.Entry, entry_categoria : tk.Entry,entry_cantidad : tk.Entry, entry_precio : tk.Entry):
 
@@ -85,9 +125,9 @@ def agregar_producto(entry_nombre : tk.Entry, entry_categoria : tk.Entry,entry_c
     estado = "Disponible"
     precio_venta = precio_compra * 1.2  
     datos = (nombre_producto, cate_produc, precio_compra, cantidad, precio_venta, estado)
-    # consulta = "INSERT INTO producto (nombre_producto, cate_produc, precio_compra, cantidad, 	precio_venta, estado) VALUES (%s, %s, %s, %s, %s, %s)"
-    # cursor.execute(consulta, datos)
-    # conexion.commit()
+    consulta = "INSERT INTO producto (nombre_producto, cate_produc, precio_compra, cantidad, 	precio_venta, estado) VALUES (%s, %s, %s, %s, %s, %s)"
+    cursor.execute(consulta, datos)
+    conexion.commit()
     messagebox.showinfo("Registro exitoso", "Producto registrado correctamente")
 
 
@@ -105,3 +145,14 @@ def actualizar_productos(lista_productos):
     for producto in resultados:
         precio_venta = producto[4] * 1.2
         lista_productos.insert(tk.END, f"ID: {producto[0]}, Producto: {producto[1]} -- Categoria: {producto[2]} -- precio_compra: {producto[3]:.2f} -- cantidad: {producto[4]} -- precio_venta: {producto[5]} -- estado: {producto[6]}")
+
+def actualizar_productos_facturas(detalles_de_factura ):
+    id_factura = ultima_factura()
+    print(f"actualizando lista de facturas de la factura numero { id_factura} ....")
+    query = f"SELECT det_factura.id_factura, producto.nombre_producto, det_factura.cantidad, producto.precio_venta, det_factura.total FROM det_factura JOIN producto ON det_factura.id_producto = producto.id WHERE det_factura.id_factura = {id_factura};"
+    cursor.execute(query)
+    resultados = cursor.fetchall()
+    detalles_de_factura.delete(0, tk.END)
+    for producto in resultados:
+        detalles_de_factura.insert(tk.END, f"Factura: {producto[0]} -- Producto: {producto[1]} -- Cantidad: {producto[2]} -- Precio: {producto[3]} -- Total: {producto[4]}")
+  

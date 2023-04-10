@@ -1,50 +1,43 @@
 import tkinter as tk
-from tkinter import *
-import mysql.connector
 
-# Conectar a la base de datos
-conexion = mysql.connector.connect(
-  host="localhost",
-  user="root",
-  password="",
-  database="inventario"
-)
+class VentanaSecundaria:
+    def __init__(self, ventana_principal):
+        self.ventana_principal = ventana_principal
+        self.ventana = tk.Toplevel(ventana_principal.root)
+        self.ventana.protocol("WM_DELETE_WINDOW", self.cerrar_ventana)
+        self.boton_cerrar = tk.Button(self.ventana, text="Cerrar", command=self.cerrar_ventana)
+        self.boton_cerrar.pack()
+        self.ventana.grab_set()
+        self.ventana.wait_window()
+        self.ventana_principal.habilitar_botones() 
 
-cursor = conexion.cursor()
-cursor.execute("CREATE DATABASE IF NOT EXISTS `inventario` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;")
-cursor.execute("USE `inventario`;")
+    def cerrar_ventana(self):
+        self.ventana.grab_release()
+        self.ventana.destroy()
 
+class VentanaPrincipal:
+    def __init__(self):
+        self.root = tk.Tk()
+        self.boton_abrir = tk.Button(self.root, text="Abrir ventana", command=self.abrir_ventana)
+        self.boton_abrir.pack()
+        self.boton_guardar = tk.Button(self.root, text="Guardar", command= lambda : self.boton_guarda())
+        self.boton_guardar.pack()
+        self.boton2 = tk.Button(self.root, text="Cancelar", command= lambda :  self.boton_cancela())
+        self.boton2.pack()
 
-def agregar_detalles_factura(var_seleccion, entry_cantidad, diccionario):
-    id_factura = ultima_factura()
-    nombre_producto = var_seleccion.get()
-    id_producto = diccionario[nombre_producto]
-    cantidad = entry_cantidad.get()
-    precio_venta = precio_producto(id_producto)
-    total = precio_venta * int(cantidad)
-    print(f'El precio de venta es: {precio_venta}---- Se agregaron {cantidad} unidades de {nombre_producto} (ID: {id_producto}) y el total es {total}')
-    # datos = ( id_factura, id_producto, cantidad, precio_venta, total)
-    # insert = "INSERT INTO det_factura (id_factura, id_producto, cantidad, precio_venta, total) VALUES (%s, %s, %s, %s, %s)"
-    # cursor.execute(insert, datos)
-    # conexion.commit()
+    def boton_guarda(self):
+        print("Guardando informacion........")
 
-def precio_producto(id_producto):
-    dato = id_producto
-    consulta = f"SELECT precio_venta FROM producto WHERE id = {dato}"
-    cursor.execute(consulta)
-    precio_de_venta = cursor.fetchone()
-    if precio_de_venta is not None:
-        return precio_de_venta[0]
+    def boton_cancela(self):
+        print("Cancelando proceso...........")
 
+    def abrir_ventana(self):
+        self.deshabilitar_botones()
+        self.ventana_secundaria = VentanaSecundaria(self)
 
-def ultima_factura():
-    consulta= "SELECT id FROM facturas ORDER by id DESC LIMIT 1"
-    cursor.execute(consulta)
-    resultado = cursor.fetchone()
-    # conexion.close()
-    if resultado is not None:
-        return resultado[0]
-    conexion.commit()
+    def habilitar_botones(self):
+        self.boton_guardar.config(state=tk.NORMAL)
+        self.boton2.config(state=tk.NORMAL)
 
 def actualizar_productos(lista_productos):
     cursor.execute("SELECT * FROM producto")
@@ -116,6 +109,3 @@ ventana_principal.title("Inventario number 2")
 
 app.mainloop()
 
-
-# Ejecutar la aplicación
-ventana_principal.mainloop()

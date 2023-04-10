@@ -1,2 +1,4 @@
 En la ventada_facturas tengo desabilitada la funcion de crear factura 
- y en agregar_detalles_factura tengo desabilitada la insercion en la base de datos
+# y en agregar_detalles_factura tengo desabilitada la insercion en la base de datos
+
+tener en cuanta paar el boton modificar si se puede modificar el valor del producto toca ingresar el valor de venta nuevamente con el 20%

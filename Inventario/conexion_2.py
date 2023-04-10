@@ -1,4 +1,3 @@
-import tkinter as tk
 import mysql.connector
 
 # Conectar a la base de datos
