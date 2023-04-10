@@ -2,6 +2,10 @@ import tkinter as tk
 from tkinter import *
 from funciones import validacion_cantidad_productos, actualizar_productos_facturas, actualizar_productos, limpiar_campos, agregar_producto, crear_factura, agregar_detalles_factura, limpiar_formulario_detalles_fatura, activar_factura
 from conexion_2 import conexion, cursor
+import pandas as pd
+from grafico_productos import grafico_mas_vendido
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 
@@ -158,6 +162,11 @@ def ventana_modificar(nombre_producto):
     id_producto = nombre_producto.split(":")[1].strip()
     print(f"abriendo ventana para modificar el producto con ID {id_producto}")
 
+def cerrar_aplicacion():
+    print("cerrando ventana principal....")
+    conexion.close()
+    ventana_principal.destroy()
+
 
 # Crear la ventana principal
 ventana_principal = tk.Tk()
@@ -169,6 +178,7 @@ botones = {
     "eliminar": tk.Button(ventana_principal, text="Eliminar", command=eliminar_producto, state=tk.DISABLED),
     "facturas": tk.Button(ventana_principal, text="Facturas", command=ventana_facturas),
     "nuevo": tk.Button(ventana_principal, text="Nuevo", command=ventana_nuevo),
+    "Reporte": tk.Button(ventana_principal, text="Reporte", command=lambda : grafico_mas_vendido()),
     "actualizar": tk.Button(ventana_principal, text="Actualizar", command=funcion_modificar, state=tk.DISABLED)
 }
 
@@ -178,18 +188,23 @@ button_nuevo = botones["nuevo"]
 button_actualizar = botones["actualizar"]
 button_facturas = botones["facturas"]
 button_eliminar = botones["eliminar"]
+botton_reporte = botones["Reporte"]
 
 # Ubicar los widgets en la ventana_principal
 button_nuevo.grid(row=6, column=0)
 button_facturas.grid(row=6, column=1)
 button_actualizar.grid(row=6, column=2)
 button_eliminar.grid(row=6, column=3)
-lista_productos.grid(row=8, column=0, columnspan=4)
+botton_reporte.grid(row=6, column=4)
+lista_productos.grid(row=8, column=0, columnspan=5)
 
 lista_productos.bind("<<ListboxSelect>>", seleccion_producto)
 
 # Actualizar la lista de productos al inicio de la aplicación
 actualizar_productos(lista_productos)
+
+# Agregar el protocolo para cerrar la aplicación al hacer clic en la X
+ventana_principal.protocol("WM_DELETE_WINDOW", cerrar_aplicacion)
 
 # Ejecutar la aplicación
 ventana_principal.mainloop()
