@@ -3,9 +3,10 @@ from tkinter import *
 from funciones import validacion_cantidad_productos, actualizar_productos_facturas, actualizar_productos, limpiar_campos, agregar_producto, crear_factura, agregar_detalles_factura, limpiar_formulario_detalles_fatura, activar_factura
 from conexion_2 import conexion, cursor
 import pandas as pd
-from grafico_productos import grafico_mas_vendido
+from grafico_productos import producto_mas_vendido
+from grafico_ventas import ventas_por_mes
 import matplotlib.pyplot as plt
-import seaborn as sns
+
 
 
 
@@ -178,7 +179,7 @@ botones = {
     "eliminar": tk.Button(ventana_principal, text="Eliminar", command=eliminar_producto, state=tk.DISABLED),
     "facturas": tk.Button(ventana_principal, text="Facturas", command=ventana_facturas),
     "nuevo": tk.Button(ventana_principal, text="Nuevo", command=ventana_nuevo),
-    "Reporte": tk.Button(ventana_principal, text="Reporte", command=lambda : grafico_mas_vendido()),
+    "Reporte": tk.Button(ventana_principal, text="Reporte", command=lambda : ventas_por_mes()),
     "actualizar": tk.Button(ventana_principal, text="Actualizar", command=funcion_modificar, state=tk.DISABLED)
 }
 
