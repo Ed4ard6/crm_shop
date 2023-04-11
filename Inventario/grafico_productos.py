@@ -23,10 +23,10 @@ def producto_mas_vendido():
     plt.title('Los 10 productos mas vendidos')
     #plt.xlabel('Producto')
     plt.ylabel('Cantidad vendida')
-
+    
     # Ajustar los márgenes
     fig.subplots_adjust(left=0.05, bottom=0.05, right=0.95, top=0.95)
-
+    plt.tight_layout()
     # Mostrar la figura en una ventana
     root = tk.Tk()
     root.state('zoomed')

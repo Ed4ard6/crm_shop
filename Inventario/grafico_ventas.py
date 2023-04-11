@@ -6,6 +6,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 from datetime import datetime
 from conexion_2 import conexion, cursor
+import matplotlib.ticker as ticker
 
 def ventas_por_mes():
 
@@ -25,8 +26,14 @@ def ventas_por_mes():
     plt.xlabel('Mes')
     plt.ylabel('Total de ventas')
 
+    # Personalizar formato del eje y
+    ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:,.0f}'))
+
     # Ajustar los márgenes
     fig.subplots_adjust(left=0.05, bottom=0.05, right=0.95, top=0.95)
+
+    # Ajustar el tamaño del gráfico para evitar que las etiquetas se corten
+    plt.tight_layout()
 
     # Mostrar la figura en una ventana
     root = tk.Tk()
