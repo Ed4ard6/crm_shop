@@ -179,7 +179,7 @@ botones = {
     "eliminar": tk.Button(ventana_principal, text="Eliminar", command=eliminar_producto, state=tk.DISABLED),
     "facturas": tk.Button(ventana_principal, text="Facturas", command=ventana_facturas),
     "nuevo": tk.Button(ventana_principal, text="Nuevo", command=ventana_nuevo),
-    "Reporte": tk.Button(ventana_principal, text="Reporte", command=lambda : producto_mas_vendido()),
+    "Reporte": tk.Button(ventana_principal, text="Reporte", command= lambda : ventas_por_mes()),
     "actualizar": tk.Button(ventana_principal, text="Actualizar", command=funcion_modificar, state=tk.DISABLED)
 }
 

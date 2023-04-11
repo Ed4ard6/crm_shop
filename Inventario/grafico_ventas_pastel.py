@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import tkinter as tk
+import seaborn as sns
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 from datetime import datetime
@@ -14,27 +15,12 @@ def ventas_por_mes():
     # Obtener los datos de la tabla y almacenarlos en un DataFrame
     df = pd.DataFrame(cursor.fetchall(), columns=["mes", "total_venta"])
 
-    # Crear el gráfico de barras horizontales
+    # Crear el gráfico de pastel
     fig, ax = plt.subplots()
-    bars = ax.barh(df['mes'], df['total_venta'])
+    ax.pie(df['total_venta'], labels=df['mes'], autopct='%1.1f%%', startangle=90) # Usar el total de ventas como datos y el mes como etiquetas
 
-    # Agregar títulos y etiquetas de los ejes
-    plt.title('Total de ventas por mes')
-    plt.ylabel('Mes')
-
-    # Personalizar formato del eje x
-    ax.xaxis.set_major_formatter('${x:,.0f}')
-
-    # Colocar los valores del total de cada mes en el eje x
-    ax.set_xticks(df['total_venta'])
-    ax.xaxis.tick_top()
-    ax.xaxis.set_label_position('top')
-
-    # Ajustar los márgenes
-    fig.subplots_adjust(left=0.25, bottom=0.05, right=0.95, top=0.95)
-
-    # Ajustar el tamaño del gráfico para evitar que las etiquetas se corten
-    plt.tight_layout()
+    # Agregar título
+    plt.title('Porcentaje de ventas por mes')
 
     # Mostrar la figura en una ventana
     root = tk.Tk()
@@ -58,3 +44,5 @@ def ventas_por_mes():
     # Cerrar la conexión a la base de datos
     cursor.close()
     conexion.close()
+
+ventas_por_mes()
