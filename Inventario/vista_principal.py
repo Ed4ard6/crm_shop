@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import *
 from conexion_2 import conexion, cursor
+from ventana_factura import ventana_facturas
 
 # Función de controlador de eventos para el evento Enter (hover)
 def on_enter(event):
@@ -29,7 +30,7 @@ ventana_principal.state("zoomed")
 
 # Crear los widgets de la GUI
 botones = {
-    "facturas": tk.Button(ventana_principal, text="Facturas", command="ventana_facturas", width=10, height=2, cursor="hand2"),
+    "facturas": tk.Button(ventana_principal, text="Facturas", command=lambda : ventana_facturas(ventana_principal), width=10, height=2, cursor="hand2"),
     "inventario": tk.Button(ventana_principal, text="Inventario", command="ventana_nuevo", width=10, height=2, cursor="hand2"),
     "Reporte": tk.Menubutton(ventana_principal, text="Reporte", width=10, height=2, cursor="hand2")
 }
