@@ -74,6 +74,7 @@ def eliminar_producto(tabla_productos):
         return
 
 def obtener_producto_por_id(id_producto):
+    print(f"El Id del producto es.......{id_producto}")
     # Realizar consulta en la base de datos para obtener el producto con el ID proporcionado
     cursor = conexion.cursor()
     cursor.execute("SELECT * FROM producto WHERE id = %s", (id_producto,))
@@ -92,15 +93,17 @@ def obtener_producto_por_id(id_producto):
 
 
 
-def modificar_producto(ventana_inventario, tabla_productos):
+def modificar_producto(tabla_productos, ventana_inventario ):
+    print(f"Entre a modificar_producto")
     seleccionado = tabla_productos.selection() # Obtener el producto seleccionado de la tabla
     if seleccionado:
         id_producto = tabla_productos.item(seleccionado)['values'][0] # Obtener el valor de la primera columna (ID)
         # Abrir la ventana de modificación del producto
         producto = obtener_producto_por_id(id_producto) # Obtener el producto de la base de datos por ID
-        ventana_modificar(producto, ventana_inventario)
+        ventana_modificar(tabla_productos, producto, ventana_inventario)
 
-def ventana_modificar( producto, ventana_inventario, tabla_productos ):
+def ventana_modificar(tabla_productos, producto, ventana_inventario):
+    print(f"Entre a ventana_modificar")
     # Crear una nueva ventana
     ventana_actualizar_producto = tk.Toplevel(ventana_inventario)
     ventana_actualizar_producto.title("Modificar Producto")
@@ -122,9 +125,8 @@ def ventana_modificar( producto, ventana_inventario, tabla_productos ):
     entry_estado = tk.Entry(ventana_actualizar_producto)
     entry_estado.insert(tk.END, producto[6]) # Mostrar el estado del producto en el campo de entrada
 
-
     # Crear el botón de guardar
-    button_guardar = tk.Button(ventana_actualizar_producto, text="Guardar", command=lambda: guardar_modificaciones(ventana_actualizar_producto, tabla_productos, producto[0], entry_nombre.get(), entry_categoria.get(), entry_precio_compra.get(), entry_cantidad.get(), entry_estado.get()))
+    button_guardar = tk.Button(ventana_actualizar_producto, text="Guardar", command=lambda: guardar_modificaciones(ventana_actualizar_producto, tabla_productos, producto[0], entry_nombre.get(), entry_categoria.get(), entry_precio_compra.get(), entry_cantidad.get(), entry_estado.get(), cursor))
 
 
     # Ubicar los widgets en la ventana_actualizar_producto
@@ -141,11 +143,12 @@ def ventana_modificar( producto, ventana_inventario, tabla_productos ):
     button_guardar.grid(row=6, column=0, columnspan=2, padx=10, pady=5)
 
 
+
 def guardar_modificaciones(ventana_actualizar_producto, tabla_productos, id_producto, nombre_producto, categoria_producto, precio_compra, cantidad, estado, cursor):
     precio_compra = Decimal(precio_compra)
     precio_venta = precio_compra * Decimal(1.2)
     # Actualizar los datos del producto en la base de datos
-    update = "UPDATE producto SET nombre_producto = %s, categoria_producto = %s, precio_compra = %s, cantidad = %s, precio_venta = %s, estado = %s WHERE id = %s"
+    update = "UPDATE producto SET nombre_producto = %s, cate_produc = %s, precio_compra = %s, cantidad = %s, precio_venta = %s, estado = %s WHERE id = %s"
     cursor.execute(update, (nombre_producto, categoria_producto, precio_compra, cantidad, precio_venta, estado, id_producto))
     conexion.commit()
 
@@ -171,21 +174,17 @@ def seleccion_producto(tabla_productos,event ,botones ):
 
 def cerrar_aplicacion(ventana_inventario):
     print("cerrando ventana principal....")
-    conexion.close()
     ventana_inventario.destroy()
 
 def productos():
         # Crear la ventana principal
     ventana_inventario = tk.Tk()
     ventana_inventario.title("Inventario number 2")
-    
-    producto = "producto1" 
-
     # Crear los widgets de la GUI
     botones = {
         "eliminar": tk.Button(ventana_inventario, text="Eliminar", command= lambda : eliminar_producto(tabla_productos), state=tk.DISABLED),
         "nuevo": tk.Button(ventana_inventario, text="Nuevo", command= lambda : ventana_nuevo(ventana_inventario, button_nuevo, tabla_productos)),
-        "actualizar": tk.Button(ventana_inventario, text="Actualizar", command=lambda: ventana_modificar(producto, ventana_inventario, tabla_productos), state=tk.DISABLED)
+        "actualizar": tk.Button(ventana_inventario, text="Actualizar", command=lambda: modificar_producto(tabla_productos, ventana_inventario ), state=tk.DISABLED)
     }
     tabla_productos = ttk.Treeview(ventana_inventario)
     tabla_productos['columns'] = ("ID", "Producto", "Categoría", "Precio Compra", "Cantidad", "Precio Venta", "Estado") # Definir las columnas

@@ -1,4 +1,5 @@
 En la ventada_facturas tengo desabilitada la funcion de crear factura 
-# y en agregar_detalles_factura tengo desabilitada la insercion en la base de datos
 
-tener en cuanta paar el boton modificar si se puede modificar el valor del producto toca ingresar el valor de venta nuevamente con el 20%
+tengo funcionando todo pero me hacen fata 2 cosas
+1- verificar de que la factura tenga almenos un producto para poder finalizar
+2- validar que al agregar tenga una cantidad
