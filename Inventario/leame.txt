@@ -4,3 +4,5 @@ tengo funcionando todo pero me hacen fatan 3 cosas
 1- verificar de que la factura tenga almenos un producto para poder finalizar
 2- validar que al agregar tenga una cantidad
 3- posicionar y agrandar los botnes principales
+4- agregar el total en las creacion de la factura
+5- colocar los detalles de factura en una tabla
