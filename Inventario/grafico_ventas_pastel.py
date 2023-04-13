@@ -7,7 +7,7 @@ from matplotlib.figure import Figure
 from datetime import datetime
 from conexion_2 import conexion, cursor
 
-def ventas_por_mes():
+def ventas_por_mes_pastel():
     # Realizar la consulta a la base de datos
     query = "SELECT DATE_FORMAT(fecha, '%M %Y') AS mes, SUM(total) AS total_venta FROM facturas GROUP BY mes ORDER BY fecha;"
     cursor.execute(query)
@@ -44,5 +44,3 @@ def ventas_por_mes():
     # Cerrar la conexión a la base de datos
     cursor.close()
     conexion.close()
-
-ventas_por_mes()

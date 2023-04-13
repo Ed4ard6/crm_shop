@@ -169,13 +169,12 @@ def limpiar_campos(entry_nombre, entry_categoria, entry_cantidad, entry_precio):
     entry_precio.delete(0, tk.END)
     entry_nombre.focus_set()  # Ubicar cursor en el primer campo de entrada
 
-def actualizar_productos(lista_productos):
+def actualizar_productos(tabla_productos):
     cursor.execute("SELECT * FROM producto")
     resultados = cursor.fetchall()
-    lista_productos.delete(0, tk.END)
+    tabla_productos.delete(*tabla_productos.get_children()) # Eliminar los elementos actuales del Treeview
     for producto in resultados:
-        precio_venta = producto[4] * 1.2
-        lista_productos.insert(tk.END, f"ID: {producto[0]}, Producto: {producto[1]} -- Categoria: {producto[2]} -- precio_compra: {producto[3]:.2f} -- cantidad: {producto[4]} -- precio_venta: {producto[5]} -- estado: {producto[6]}")
+        tabla_productos.insert("", tk.END, values=(producto[0], producto[1], producto[2], producto[3], producto[4], producto[5], producto[6]))
 
 def actualizar_productos_facturas(detalles_de_factura ):
     id_factura = ultima_factura()
