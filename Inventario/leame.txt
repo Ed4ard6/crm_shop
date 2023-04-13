@@ -1,5 +1,6 @@
 En la ventada_facturas tengo desabilitada la funcion de crear factura 
 
-tengo funcionando todo pero me hacen fata 2 cosas
+tengo funcionando todo pero me hacen fatan 3 cosas
 1- verificar de que la factura tenga almenos un producto para poder finalizar
 2- validar que al agregar tenga una cantidad
+3- posicionar y agrandar los botnes principales
