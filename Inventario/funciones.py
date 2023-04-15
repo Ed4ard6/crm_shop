@@ -3,49 +3,60 @@ from tkinter import messagebox
 from conexion_2 import conexion, cursor
 import datetime
 
-def validacion_cantidad_productos(var_seleccion, entry_cantidad, diccionario, detalles_de_factura):
+def cancelar_factura():
     id_factura = ultima_factura()
-    nombre_producto = var_seleccion.get()
-    cantidad_ingresada = int(entry_cantidad.get())
-    id_producto = diccionario[nombre_producto]
-    consulta = f"SELECT cantidad FROM det_factura WHERE id_producto = {id_producto} AND id_factura = {id_factura}"
-    cursor.execute(consulta)
-    resultado = cursor.fetchone()
-    cantidad_producto_en_factura = 0  # Asignar un valor predeterminado
-    if resultado is not None:
-        cantidad_producto_en_factura = resultado[0]  # Asignar el valor del resultado de la consulta
-        print(f"el valor de la consulta es {cantidad_producto_en_factura}")
-    if cantidad_producto_en_factura != 0:
-        mensaje = f"El producto {nombre_producto} ya está registrado en esta factura con cantidad {cantidad_producto_en_factura}. ¿Desea agregarlo nuevamente?"
-        respuesta = messagebox.askyesno("Producto ya registrado", mensaje)
-        if respuesta:
-            print("respuesta si")
-            cantidad_ingresada += cantidad_producto_en_factura
-            actualizar_cantidad(cantidad_ingresada, id_producto)
-            limpiar_formulario_detalles_fatura(var_seleccion, entry_cantidad)
-            actualizar_productos_facturas(detalles_de_factura) 
-            entry_cantidad.focus_set()
-        else:
-            print("respuesta no")
-            entry_cantidad.focus_set()
-            return
-    
-    else:
-        query = f"SELECT cantidad FROM producto WHERE id = {id_producto};"
-        cursor.execute(query)
-        cantidad_disponible = cursor.fetchone()[0]
+    estado = "Cancelada"
+    datos = (estado, id_factura)
+    update = "UPDATE facturas SET estado = %s WHERE id = %s;"
+    cursor.execute(update, datos)
+    conexion.commit()
+    print("Factura cancelada")
+    actualizar_cantidad_disponible(id_factura)
 
-        if cantidad_disponible != 0:
-            if cantidad_disponible >= cantidad_ingresada: 
-                agregar_detalles_factura(var_seleccion, entry_cantidad, diccionario)
+def validacion_cantidad_productos(var_seleccion, entry_cantidad, diccionario, detalles_de_factura):
+    if len(entry_cantidad.get()) == 0:
+        messagebox.showerror("Error", "Tiene que establecer la cantidad del producto a agregar")
+        entry_cantidad.focus_set()
+    else:
+        id_factura = ultima_factura()
+        nombre_producto = var_seleccion.get()
+        cantidad_ingresada = int(entry_cantidad.get())
+        id_producto = diccionario[nombre_producto]
+        consulta = f"SELECT cantidad FROM det_factura WHERE id_producto = {id_producto} AND id_factura = {id_factura}"
+        cursor.execute(consulta)
+        resultado = cursor.fetchone()
+        cantidad_producto_en_factura = 0  # Asignar un valor predeterminado
+        if resultado is not None:
+            cantidad_producto_en_factura = resultado[0]  # Asignar el valor del resultado de la consulta
+        if cantidad_producto_en_factura != 0:
+            mensaje = f"El producto {nombre_producto} ya está registrado en esta factura con cantidad {cantidad_producto_en_factura}. ¿Desea agregarlo nuevamente?"
+            respuesta = messagebox.askyesno("Producto ya registrado", mensaje)
+            if respuesta: 
+                cantidad_ingresada += cantidad_producto_en_factura
+                actualizar_cantidad(cantidad_ingresada, id_producto)
                 limpiar_formulario_detalles_fatura(var_seleccion, entry_cantidad)
                 actualizar_productos_facturas(detalles_de_factura) 
-            else:
-                messagebox.showerror("Error", f"Para {nombre_producto} solo tenemos {cantidad_disponible} unidades disponibles")
                 entry_cantidad.focus_set()
+            else:
+                entry_cantidad.focus_set()
+                return
+        
         else:
-            messagebox.showerror("Error", f"No tenemos disponibilidad para {nombre_producto} ")
-            entry_cantidad.focus_set()
+            query = f"SELECT cantidad FROM producto WHERE id = {id_producto};"
+            cursor.execute(query)
+            cantidad_disponible = cursor.fetchone()[0]
+
+            if cantidad_disponible != 0:
+                if cantidad_disponible >= cantidad_ingresada: 
+                    agregar_detalles_factura(var_seleccion, entry_cantidad, diccionario)
+                    limpiar_formulario_detalles_fatura(var_seleccion, entry_cantidad)
+                    actualizar_productos_facturas(detalles_de_factura) 
+                else:
+                    messagebox.showerror("Error", f"Para {nombre_producto} solo tenemos {cantidad_disponible} unidades disponibles")
+                    entry_cantidad.focus_set()
+            else:
+                messagebox.showerror("Error", f"No tenemos disponibilidad para {nombre_producto} ")
+                entry_cantidad.focus_set()
 
 
 
@@ -59,7 +70,6 @@ def actualizar_cantidad(cantidad_ingresada, id_producto):
     total = precio_venta * cantidad_ingresada
     query = f"UPDATE det_factura SET cantidad = {cantidad_ingresada}, total = {total} WHERE id_producto = {id_producto} AND id_factura = {id_factura};"
     cursor.execute(query)
-    print("supuestamente alctualize la cantidad")
     conexion.commit()
 
 def agregar_detalles_factura(var_seleccion, entry_cantidad, diccionario):

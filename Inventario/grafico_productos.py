@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import tkinter as tk
 import seaborn as sns
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg 
-from matplotlib.figure import Figure
 
 def producto_mas_vendido():
     query = "SELECT producto.id, producto.nombre_producto AS producto, SUM(det_factura.cantidad) AS cantidad_vendida FROM det_factura JOIN producto ON det_factura.id_producto = producto.id GROUP BY producto.nombre_producto ORDER BY cantidad_vendida DESC LIMIT 10;"

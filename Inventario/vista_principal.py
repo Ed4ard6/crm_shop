@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import *
-from conexion_2 import conexion, cursor
 from ventana_factura import ventana_facturas
 from grafico_productos import producto_mas_vendido
 from grafico_ventas import ventas_por_mes
@@ -9,7 +8,7 @@ from ventana_productos import productos
 
 # Función de controlador de eventos para el evento Enter (hover)
 def on_enter(event):
-    event.widget.config(bg="blue")
+    event.widget.config(bg="#96f321")
 
 # Función de controlador de eventos para el evento Leave (fuera del hover)
 def on_leave(event):
@@ -33,6 +32,11 @@ button_nuevo = botones["inventario"]
 button_facturas = botones["facturas"]
 botton_reporte = botones["Reporte"]
 
+# Configurar el tamaño de fuente en los botones
+font_size = 10  # Tamaño de fuente deseado
+button_nuevo.config(font=("Helvetica", font_size))
+button_facturas.config(font=("Helvetica", font_size))
+botton_reporte.config(font=("Helvetica", font_size))
 
 # Crear el submenú
 menu_reporte = tk.Menu(botton_reporte, tearoff=False)
@@ -51,10 +55,15 @@ button_facturas.bind("<Leave>", on_leave)
 botton_reporte.bind("<Enter>", on_enter)
 botton_reporte.bind("<Leave>", on_leave)
 
-# Ubicar los widgets en la ventana_principal
-button_nuevo.grid(row=1, column=0)
-button_facturas.grid(row=1, column=1)
-botton_reporte.grid(row=1, column=2)
+# Configurar la geometría de cuadrícula para centrar los botones
+button_nuevo.grid(row=1, column=0, sticky='nsew')
+button_facturas.grid(row=1, column=1, sticky='nsew')
+botton_reporte.grid(row=1, column=2, sticky='nsew')
 
+# Configurar las columnas y filas para que se expandan y llenen todo el espacio disponible
+ventana_principal.columnconfigure(0, weight=1)
+ventana_principal.columnconfigure(1, weight=1)
+ventana_principal.columnconfigure(2, weight=1)
+ventana_principal.rowconfigure(1, weight=1)
 # Ejecutar la aplicación
 ventana_principal.mainloop()
