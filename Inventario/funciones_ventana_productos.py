@@ -2,12 +2,32 @@ import tkinter as tk
 from tkinter import messagebox
 from conexion_2 import conexion, cursor
 
-def actualizar_productos(tabla_productos):
+def actualizar_productos(tabla_productos,button_nuevo):
     cursor.execute("SELECT * FROM producto")
     resultados = cursor.fetchall()
     tabla_productos.delete(*tabla_productos.get_children()) # Eliminar los elementos actuales del Treeview
     for producto in resultados:
         tabla_productos.insert("", tk.END, values=(producto[0], producto[1], producto[2], producto[3], producto[4], producto[5], producto[6]))
+    button_nuevo.focus_set()
+def verificacion_de_estados_cantidad(tabla_productos,button_nuevo):
+    cursor.execute("SELECT * FROM producto")
+    resultados = cursor.fetchall()
+    tabla_productos.delete(*tabla_productos.get_children()) # Eliminar los elementos actuales del Treeview
+    for producto in resultados:
+        producto_id = producto[0]
+        producto_cantidad = producto[4]
+        producto_estado = producto[6]
+        
+        # Verificar si la cantidad es cero y el estado es disponible, y actualizar el estado a "Agotado"
+        if producto_cantidad == 0 and producto_estado == "Disponible":
+            cursor.execute("UPDATE producto SET estado = %s WHERE id = %s", ("Agotado", producto_id))
+            conexion.commit()
+        
+        # Verificar si la cantidad es diferente de cero y el estado es "Agotado", y actualizar el estado a "Disponible"
+        elif producto_cantidad != 0 and producto_estado == "Agotado":
+            cursor.execute("UPDATE producto SET estado = %s WHERE id = %s", ("Disponible", producto_id))
+            conexion.commit()
+    actualizar_productos(tabla_productos, button_nuevo)
 
 def limpiar_campos(entry_nombre, entry_categoria, entry_cantidad, entry_precio):
     entry_nombre.delete(0, tk.END)
@@ -25,7 +45,7 @@ def agregar_producto(entry_nombre : tk.Entry, entry_categoria : tk.Entry,entry_c
     estado = "Disponible"
     precio_venta = precio_compra * 1.2  
     datos = (nombre_producto, cate_produc, precio_compra, cantidad, precio_venta, estado)
-    consulta = "INSERT INTO producto (nombre_producto, cate_produc, precio_compra, cantidad, 	precio_venta, estado) VALUES (%s, %s, %s, %s, %s, %s)"
+    consulta = "INSERT INTO producto (nombre_producto, cate_produc, precio_compra, cantidad, precio_venta, estado) VALUES (%s, %s, %s, %s, %s, %s)"
     cursor.execute(consulta, datos)
     conexion.commit()
     messagebox.showinfo("Registro exitoso", "Producto registrado correctamente")

@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import *
-from funciones import validacion_cantidad_productos, actualizar_productos_facturas, activar_factura, ultima_factura, cancelar_factura, crear_factura
+from funciones_venta_factura import validacion_cantidad_productos, actualizar_productos_facturas, activar_factura, ultima_factura, cancelar_factura, crear_factura
 from conexion_2 import conexion, cursor
 from tkinter import messagebox
 from tkinter import ttk

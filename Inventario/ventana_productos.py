@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import *
-from funciones_ventana_productos import actualizar_productos, limpiar_campos, agregar_producto
+from funciones_ventana_productos import limpiar_campos, agregar_producto,verificacion_de_estados_cantidad
 from conexion_2 import conexion, cursor
 import matplotlib.pyplot as plt
 from tkinter import ttk
@@ -10,7 +10,7 @@ from decimal import Decimal
 
 def close_modal_new_product(ventana_emergente : tk.Toplevel, button_nuevo, tabla_productos):
     ventana_emergente.destroy()
-    actualizar_productos(tabla_productos)
+    verificacion_de_estados_cantidad(tabla_productos)
     habilitar_botones(button_nuevo)
 
 def deshabilitar_botones(button_nuevo):
@@ -68,7 +68,7 @@ def eliminar_producto(tabla_productos):
             cursor.execute("UPDATE producto SET estado='Eliminado' WHERE id=%s", (id_producto,))
             conexion.commit()
             # Actualizar la tabla de productos
-            actualizar_productos(tabla_productos)
+            verificacion_de_estados_cantidad(tabla_productos)
     else:
         print("respuesta no")
         return
@@ -159,7 +159,7 @@ def guardar_modificaciones(ventana_actualizar_producto, tabla_productos, id_prod
     ventana_actualizar_producto.destroy()
 
     # Actualizar la tabla de productos
-    actualizar_productos(tabla_productos)
+    verificacion_de_estados_cantidad(tabla_productos)
 
 def seleccion_producto(tabla_productos,event ,botones ):
     print("Función seleccion_producto() ejecutada") # Agregar esta línea de prueba
@@ -223,7 +223,7 @@ def productos():
     tabla_productos.bind("<<TreeviewSelect>>", lambda event, tabla=tabla_productos, botones=botones: seleccion_producto(tabla, event, botones))  # Modificar el evento a <<TreeviewSelect>>
 
     # Actualizar la lista de productos al inicio de la aplicación
-    actualizar_productos(tabla_productos)
+    verificacion_de_estados_cantidad(tabla_productos, button_nuevo)
     seleccion_producto(tabla_productos ,None, botones)  # Llamar a la función seleccion_producto() con None como argumento
 
 
