@@ -75,7 +75,7 @@ def eliminar_producto():
         producto = lista_productos.get(indice)
         id_producto = producto.split(',')[0][4:]
         # Eliminar el producto de la base de datos
-        cursor.execute("DELETE FROM inventario WHERE id=%s", (id_producto,))
+        cursor.execute("UPDATE inventario SET estado='Eliminado' WHERE id=%s", (id_producto,))
         conexion.commit()
         # Actualizar la lista de productos
         actualizar_productos()
