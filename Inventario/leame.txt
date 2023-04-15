@@ -3,7 +3,7 @@ En la ventada_facturas tengo desabilitada la funcion de crear factura
 tengo funcionando todo pero me hacen fatan 5 cosas
 
 Listo 2- validar que al agregar tenga una cantidad
-4- agregar el total en las creacion de la factura
+Listo 4- agregar el total en las creacion de la factura
 Listo 5- colocar los detalles de factura en una tabla
 Listo 6-verificar que el llegar la cantidad de un producto a cero cambie en estado a agotado
 

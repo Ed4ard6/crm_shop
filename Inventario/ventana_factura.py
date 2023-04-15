@@ -44,7 +44,7 @@ def ventana_facturas(ventana_principal):
     ventana_facturas.title("Registrar Factura")
     # ventana_facturas.state('zoomed')  # Abre la ventana maximizada
 
-    # crear_factura()
+    crear_factura()
 
     lista_de_productos = OptionMenu(ventana_facturas, var_seleccion, *diccionario.keys())
     label_producto = tk.Label(ventana_facturas, text="Producto:")
@@ -71,16 +71,23 @@ def ventana_facturas(ventana_principal):
     tabla_detalles.grid(row=4, column=0, columnspan=4)
     
     # Crear una etiqueta para mostrar el total a pagar
-    label_total = tk.Label(ventana_facturas, text="Total a pagar: $0.00")
-    label_total.grid(row=5, column=0, columnspan=2)
+    label_total = tk.Label(ventana_facturas, text="Total a pagar: $0", justify="left")  # Cambiar el valor de sticky a "anchor" con valor "w"
+    label_total.grid(row=5, column=0, columnspan=4, sticky="e")
+    label_total.configure(bg='black', fg='white', font=('Helvetica', 12, 'bold'))
 
-    button_agregar = tk.Button(ventana_facturas, text="Agregar", command=lambda: validacion_cantidad_productos(var_seleccion, entry_cantidad, diccionario, tabla_detalles))
+    button_agregar = tk.Button(ventana_facturas, text="Agregar", command=lambda: validacion_cantidad_productos(var_seleccion, entry_cantidad, diccionario, tabla_detalles, label_total))
 
     #Establecemos la posicion de cada componente de la ventana
     label_producto.grid(row=0, column=0)
     lista_de_productos.grid(row=0, column=1)
     label_cantidad.grid(row=1, column=0)
     entry_cantidad.grid(row=1, column=1)
+    # Configurar la tabla_detalles para que ocupe 4 columnas en la cuadrícula
+    tabla_detalles.grid(row=4, column=0, columnspan=4, sticky="nsew")  # Agregar sticky="nsew" para que se expanda en todas las direcciones
+
+    # Configurar la redimensión de filas y columnas en la ventana
+    ventana_facturas.grid_rowconfigure(4, weight=1)  # Permitir que la fila 4 se redimensione verticalmente
+    ventana_facturas.grid_columnconfigure(0, weight=1)
     lista_de_productos.focus_set()
 
     button_agregar.grid(row=6, column=0)

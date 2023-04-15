@@ -13,9 +13,10 @@ def cancelar_factura():
     print("Factura cancelada")
     actualizar_cantidad_disponible(id_factura)
 
-def validacion_cantidad_productos(var_seleccion, entry_cantidad, diccionario, tabla_detalles):
-    if len(entry_cantidad.get()) == 0:
-        messagebox.showerror("Error", "Tiene que establecer la cantidad del producto a agregar")
+def validacion_cantidad_productos(var_seleccion, entry_cantidad, diccionario, tabla_detalles, label_total):
+    cantidad = entry_cantidad.get()  # Obtener la cantidad ingresada en el entry
+    if len(cantidad) == 0 or int(cantidad) == 0:  # Modificar la condición para incluir si la cantidad es igual a cero
+        messagebox.showerror("Error", "Tiene que establecer una cantidad válida del producto a agregar")
         entry_cantidad.focus_set()
     else:
         id_factura = ultima_factura()
@@ -35,7 +36,7 @@ def validacion_cantidad_productos(var_seleccion, entry_cantidad, diccionario, ta
                 cantidad_ingresada += cantidad_producto_en_factura
                 actualizar_cantidad(cantidad_ingresada, id_producto)
                 limpiar_formulario_detalles_fatura(var_seleccion, entry_cantidad)
-                actualizar_productos_facturas(tabla_detalles) 
+                actualizar_productos_facturas(tabla_detalles, label_total) 
                 entry_cantidad.focus_set()
             else:
                 entry_cantidad.focus_set()
@@ -50,7 +51,7 @@ def validacion_cantidad_productos(var_seleccion, entry_cantidad, diccionario, ta
                 if cantidad_disponible >= cantidad_ingresada: 
                     agregar_detalles_factura(var_seleccion, entry_cantidad, diccionario)
                     limpiar_formulario_detalles_fatura(var_seleccion, entry_cantidad)
-                    actualizar_productos_facturas(tabla_detalles) 
+                    actualizar_productos_facturas(tabla_detalles, label_total) 
                 else:
                     messagebox.showerror("Error", f"Para {nombre_producto} solo tenemos {cantidad_disponible} unidades disponibles")
                     entry_cantidad.focus_set()
@@ -203,6 +204,11 @@ def actualizar_productos_facturas(tabla_detalles, label_total):
     tabla_detalles.delete(*tabla_detalles.get_children())
     total_pagar = 0  # Inicializar la suma total en 0
     for producto in resultados:
-        tabla_detalles.insert("", tk.END, values=(producto[0], producto[1], producto[2], producto[3]))
-        total_pagar += producto[3]  # Sumar el total del producto al total a pagar
-    label_total.config(text=f"Total a pagar: ${total_pagar:.2f}")  # Actualizar el texto de la etiqueta con el total a pagar
+        precio_producto = producto[2]  # Obtener el precio del producto
+        total_producto = producto[3]  # Obtener el total del producto
+        total_pagar += total_producto  # Sumar el total del producto al total a pagar
+        precio_producto_formatted = '{:,}'.format(precio_producto)  # Formatear el precio del producto con separadores de miles
+        total_producto_formatted = '{:,}'.format(total_producto)  # Formatear el total del producto con separadores de miles
+        tabla_detalles.insert("", tk.END, values=(producto[0], producto[1], precio_producto_formatted, total_producto_formatted))  # Insertar el producto en la tabla con el precio y total formateados
+    total_pagar_formatted = '{:,}'.format(total_pagar)  # Formatear el total a pagar con separadores de miles
+    label_total.config(text=f"Total a pagar: ${total_pagar_formatted}")  # Actualizar el texto de la etiqueta con el total a pagar formateado
