@@ -8,7 +8,7 @@ def actualizar_productos(tabla_productos,button_nuevo):
     tabla_productos.delete(*tabla_productos.get_children()) # Eliminar los elementos actuales del Treeview
     for producto in resultados:
         tabla_productos.insert("", tk.END, values=(producto[0], producto[1], producto[2], producto[3], producto[4], producto[5], producto[6]))
-    button_nuevo.focus_set()
+
 def verificacion_de_estados_cantidad(tabla_productos,button_nuevo):
     cursor.execute("SELECT * FROM producto")
     resultados = cursor.fetchall()
@@ -36,8 +36,7 @@ def limpiar_campos(entry_nombre, entry_categoria, entry_cantidad, entry_precio):
     entry_precio.delete(0, tk.END)
     entry_nombre.focus_set()  # Ubicar cursor en el primer campo de entrada
 
-def agregar_producto(entry_nombre : tk.Entry, entry_categoria : tk.Entry,entry_cantidad : tk.Entry, entry_precio : tk.Entry):
-
+def agregar_producto(ventana_emergente, entry_nombre, entry_categoria, entry_cantidad, entry_precio):
     nombre_producto = entry_nombre.get()
     cate_produc = entry_categoria.get()
     cantidad = int(entry_cantidad.get())
@@ -49,3 +48,4 @@ def agregar_producto(entry_nombre : tk.Entry, entry_categoria : tk.Entry,entry_c
     cursor.execute(consulta, datos)
     conexion.commit()
     messagebox.showinfo("Registro exitoso", "Producto registrado correctamente")
+    ventana_emergente.focus_set()  # Posicionar cursor en entry_nombre
