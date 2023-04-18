@@ -24,7 +24,7 @@ ventana_principal.state("zoomed")
 # Crear los widgets de la GUI
 botones = {
     "facturas": tk.Button(ventana_principal, text="Facturas", command=lambda : ventana_facturas(ventana_principal), width=10, height=2, cursor="hand2"),
-    "inventario": tk.Button(ventana_principal, text="Inventario", command=lambda : productos(), width=10, height=2, cursor="hand2"),
+    "inventario": tk.Button(ventana_principal, text="Inventario", command=lambda : productos(ventana_principal), width=10, height=2, cursor="hand2"),
     "Reporte": tk.Menubutton(ventana_principal, text="Reporte", width=10, height=2, cursor="hand2")
 }
 
@@ -43,9 +43,9 @@ menu_reporte = tk.Menu(botton_reporte, tearoff=False)
 botton_reporte.config(menu=menu_reporte)
 
 # Agregar las opciones del submenú y vincularlas a las funciones
-menu_reporte.add_command(label="producto mas vendido", command=producto_mas_vendido)
-menu_reporte.add_command(label="ventas por mes", command=ventas_por_mes)
-menu_reporte.add_command(label="ventas por mes pastel", command=ventas_por_mes_pastel)
+menu_reporte.add_command(label="producto mas vendido", command= lambda : producto_mas_vendido(ventana_principal))
+menu_reporte.add_command(label="ventas por mes", command=lambda : ventas_por_mes(ventana_principal))
+menu_reporte.add_command(label="ventas por mes pastel", command=lambda : ventas_por_mes_pastel(ventana_principal))
 
 # Vincular eventos Enter y Leave a las funciones de controlador de eventos
 button_nuevo.bind("<Enter>", on_enter)

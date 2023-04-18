@@ -2,14 +2,14 @@ import tkinter as tk
 from tkinter import messagebox
 from conexion_2 import conexion, cursor
 
-def actualizar_productos(tabla_productos,button_nuevo):
+def actualizar_productos(tabla_productos):
     cursor.execute("SELECT * FROM producto")
     resultados = cursor.fetchall()
     tabla_productos.delete(*tabla_productos.get_children()) # Eliminar los elementos actuales del Treeview
     for producto in resultados:
         tabla_productos.insert("", tk.END, values=(producto[0], producto[1], producto[2], producto[3], producto[4], producto[5], producto[6]))
 
-def verificacion_de_estados_cantidad(tabla_productos,button_nuevo):
+def verificacion_de_estados_cantidad(tabla_productos):
     cursor.execute("SELECT * FROM producto")
     resultados = cursor.fetchall()
     tabla_productos.delete(*tabla_productos.get_children()) # Eliminar los elementos actuales del Treeview
@@ -27,7 +27,7 @@ def verificacion_de_estados_cantidad(tabla_productos,button_nuevo):
         elif producto_cantidad != 0 and producto_estado == "Agotado":
             cursor.execute("UPDATE producto SET estado = %s WHERE id = %s", ("Disponible", producto_id))
             conexion.commit()
-    actualizar_productos(tabla_productos, button_nuevo)
+    actualizar_productos(tabla_productos)
 
 def limpiar_campos(entry_nombre, entry_categoria, entry_cantidad, entry_precio):
     entry_nombre.delete(0, tk.END)

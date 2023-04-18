@@ -10,7 +10,6 @@ def cancelar_factura():
     update = "UPDATE facturas SET estado = %s WHERE id = %s;"
     cursor.execute(update, datos)
     conexion.commit()
-    print("Factura cancelada")
     actualizar_cantidad_disponible(id_factura)
 
 def validacion_cantidad_productos(var_seleccion, entry_cantidad, diccionario, tabla_detalles, label_total):
@@ -80,7 +79,6 @@ def agregar_detalles_factura(var_seleccion, entry_cantidad, diccionario):
     cantidad = entry_cantidad.get()
     precio_venta = precio_producto(id_producto)
     total = precio_venta * int(cantidad)
-    print(f'El precio de venta es: {precio_venta}---- Se agregaron {cantidad} unidades de {nombre_producto} (ID: {id_producto}) y el total es {total}')
     datos = ( id_factura, id_producto, cantidad, precio_venta, total)
     insert = "INSERT INTO det_factura (id_factura, id_producto, cantidad, precio_venta, total) VALUES (%s, %s, %s, %s, %s)"
     cursor.execute(insert, datos)
@@ -140,7 +138,6 @@ def actualizar_cantidad_disponible(id_factura):
             cursor.execute(query)
 
     conexion.commit()
-    print("Cantidades actualizadas")
 
 
 
@@ -152,7 +149,6 @@ def activar_factura():
     update = "UPDATE facturas SET estado = %s, total = %s WHERE id = %s;"
     cursor.execute(update, datos)
     conexion.commit()
-    print("Factura Activa")
     actualizar_cantidad_disponible(id_factura)
 
 

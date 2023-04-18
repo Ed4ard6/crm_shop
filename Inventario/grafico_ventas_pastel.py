@@ -7,7 +7,7 @@ from matplotlib.figure import Figure
 from datetime import datetime
 from conexion_2 import conexion, cursor
 
-def ventas_por_mes_pastel():
+def ventas_por_mes_pastel(ventana_principal):
     # Realizar la consulta a la base de datos
     query = "SELECT DATE_FORMAT(fecha, '%M %Y') AS mes, SUM(total) AS total_venta FROM facturas GROUP BY mes ORDER BY fecha;"
     cursor.execute(query)
@@ -23,23 +23,25 @@ def ventas_por_mes_pastel():
     plt.title('Porcentaje de ventas por mes')
 
     # Mostrar la figura en una ventana
-    root = tk.Tk()
-    root.state('zoomed')
-    root.wm_title("Gráfico de ventas por mes")
+    grafico_pastel = tk.Tk()
+    grafico_pastel.state('zoomed')
+    grafico_pastel.wm_title("Gráfico de ventas por mes")
 
     def cerrar_ventana():
-        print("Cerrando reportes .....")
-        root.destroy()
+        grafico_pastel.destroy()
         plt.close(fig)
+        ventana_principal.state("zoomed")
 
-    root.protocol("WM_DELETE_WINDOW", cerrar_ventana)
+    grafico_pastel.protocol("WM_DELETE_WINDOW", cerrar_ventana)
 
-    canvas = FigureCanvasTkAgg(fig, master=root)
+    canvas = FigureCanvasTkAgg(fig, master=grafico_pastel)
     canvas.draw()
     canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
+    ventana_principal.withdraw()# Ocultar ventana principal
+
     # Mostrar la ventana
-    root.mainloop()
+    grafico_pastel.mainloop()
 
     # Cerrar la conexión a la base de datos
     cursor.close()
