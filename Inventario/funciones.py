@@ -10,12 +10,12 @@ def cancelar_factura():
     update = "UPDATE facturas SET estado = %s WHERE id = %s;"
     cursor.execute(update, datos)
     conexion.commit()
-    print("Factura cancelada")
     actualizar_cantidad_disponible(id_factura)
 
-def validacion_cantidad_productos(var_seleccion, entry_cantidad, diccionario, detalles_de_factura):
-    if len(entry_cantidad.get()) == 0:
-        messagebox.showerror("Error", "Tiene que establecer la cantidad del producto a agregar")
+def validacion_cantidad_productos(var_seleccion, entry_cantidad, diccionario, tabla_detalles, label_total):
+    cantidad = entry_cantidad.get()  # Obtener la cantidad ingresada en el entry
+    if len(cantidad) == 0 or int(cantidad) == 0:  # Modificar la condición para incluir si la cantidad es igual a cero
+        messagebox.showerror("Error", "Tiene que establecer una cantidad válida del producto a agregar")
         entry_cantidad.focus_set()
     else:
         id_factura = ultima_factura()
@@ -35,7 +35,7 @@ def validacion_cantidad_productos(var_seleccion, entry_cantidad, diccionario, de
                 cantidad_ingresada += cantidad_producto_en_factura
                 actualizar_cantidad(cantidad_ingresada, id_producto)
                 limpiar_formulario_detalles_fatura(var_seleccion, entry_cantidad)
-                actualizar_productos_facturas(detalles_de_factura) 
+                actualizar_productos_facturas(tabla_detalles, label_total) 
                 entry_cantidad.focus_set()
             else:
                 entry_cantidad.focus_set()
@@ -50,7 +50,7 @@ def validacion_cantidad_productos(var_seleccion, entry_cantidad, diccionario, de
                 if cantidad_disponible >= cantidad_ingresada: 
                     agregar_detalles_factura(var_seleccion, entry_cantidad, diccionario)
                     limpiar_formulario_detalles_fatura(var_seleccion, entry_cantidad)
-                    actualizar_productos_facturas(detalles_de_factura) 
+                    actualizar_productos_facturas(tabla_detalles, label_total) 
                 else:
                     messagebox.showerror("Error", f"Para {nombre_producto} solo tenemos {cantidad_disponible} unidades disponibles")
                     entry_cantidad.focus_set()
@@ -79,7 +79,6 @@ def agregar_detalles_factura(var_seleccion, entry_cantidad, diccionario):
     cantidad = entry_cantidad.get()
     precio_venta = precio_producto(id_producto)
     total = precio_venta * int(cantidad)
-    print(f'El precio de venta es: {precio_venta}---- Se agregaron {cantidad} unidades de {nombre_producto} (ID: {id_producto}) y el total es {total}')
     datos = ( id_factura, id_producto, cantidad, precio_venta, total)
     insert = "INSERT INTO det_factura (id_factura, id_producto, cantidad, precio_venta, total) VALUES (%s, %s, %s, %s, %s)"
     cursor.execute(insert, datos)
@@ -129,9 +128,17 @@ def actualizar_cantidad_disponible(id_factura):
         cantidad_vendida = detalle[1]
         query = f"UPDATE producto SET cantidad = cantidad - {cantidad_vendida} WHERE id = {id_producto};"
         cursor.execute(query)
-    
+
+        # Verificar si la cantidad disponible es igual a 0 y actualizar el estado del producto
+        query = f"SELECT cantidad FROM producto WHERE id = {id_producto};"
+        cursor.execute(query)
+        cantidad_disponible = cursor.fetchone()[0]
+        if cantidad_disponible == 0:
+            query = f"UPDATE producto SET estado = 'Agotado' WHERE id = {id_producto};"
+            cursor.execute(query)
+
     conexion.commit()
-    print("Cantidades actulaizadas")
+
 
 
 def activar_factura():
@@ -142,7 +149,6 @@ def activar_factura():
     update = "UPDATE facturas SET estado = %s, total = %s WHERE id = %s;"
     cursor.execute(update, datos)
     conexion.commit()
-    print("Factura Activa")
     actualizar_cantidad_disponible(id_factura)
 
 
@@ -186,13 +192,19 @@ def actualizar_productos(tabla_productos):
     for producto in resultados:
         tabla_productos.insert("", tk.END, values=(producto[0], producto[1], producto[2], producto[3], producto[4], producto[5], producto[6]))
 
-def actualizar_productos_facturas(detalles_de_factura ):
+def actualizar_productos_facturas(tabla_detalles, label_total):
     id_factura = ultima_factura()
-    print(f"actualizando lista de facturas de la factura numero { id_factura} ....")
-    query = f"SELECT det_factura.id_factura, producto.nombre_producto, det_factura.cantidad, producto.precio_venta, det_factura.total FROM det_factura JOIN producto ON det_factura.id_producto = producto.id WHERE det_factura.id_factura = {id_factura};"
+    query = f"SELECT producto.nombre_producto, det_factura.cantidad, producto.precio_venta, det_factura.total FROM det_factura JOIN producto ON det_factura.id_producto = producto.id WHERE det_factura.id_factura = {id_factura};"
     cursor.execute(query)
     resultados = cursor.fetchall()
-    detalles_de_factura.delete(0, tk.END)
+    tabla_detalles.delete(*tabla_detalles.get_children())
+    total_pagar = 0  # Inicializar la suma total en 0
     for producto in resultados:
-        detalles_de_factura.insert(tk.END, f"Factura: {producto[0]} -- Producto: {producto[1]} -- Cantidad: {producto[2]} -- Precio: {producto[3]} -- Total: {producto[4]}")
-  
+        precio_producto = producto[2]  # Obtener el precio del producto
+        total_producto = producto[3]  # Obtener el total del producto
+        total_pagar += total_producto  # Sumar el total del producto al total a pagar
+        precio_producto_formatted = '{:,}'.format(precio_producto)  # Formatear el precio del producto con separadores de miles
+        total_producto_formatted = '{:,}'.format(total_producto)  # Formatear el total del producto con separadores de miles
+        tabla_detalles.insert("", tk.END, values=(producto[0], producto[1], precio_producto_formatted, total_producto_formatted))  # Insertar el producto en la tabla con el precio y total formateados
+    total_pagar_formatted = '{:,}'.format(total_pagar)  # Formatear el total a pagar con separadores de miles
+    label_total.config(text=f"Total a pagar: ${total_pagar_formatted}")  # Actualizar el texto de la etiqueta con el total a pagar formateado

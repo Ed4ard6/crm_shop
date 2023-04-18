@@ -2,10 +2,10 @@ En la ventada_facturas tengo desabilitada la funcion de crear factura
 
 tengo funcionando todo pero me hacen fatan 5 cosas
 
-2- validar que al agregar tenga una cantidad
-4- agregar el total en las creacion de la factura
-5- colocar los detalles de factura en una tabla
-6-verificar que el llegar la cantidad de un producto a cero cambie en estado a agotado
+Listo 2- validar que al agregar tenga una cantidad
+Listo 4- agregar el total en las creacion de la factura
+Listo 5- colocar los detalles de factura en una tabla
+Listo 6-verificar que el llegar la cantidad de un producto a cero cambie en estado a agotado
 
 para guardar el id de la factura en la ventana agregar productos puedo antes de registrar la factura hacer una consulta en la base de datos sobre cual es el ultimo id de la ultima factura 
 registrada y con eso simplemente seria sumerle uno para ingresar ese id en la nueva factura a registrar y con eso puedo pasar esa variable en cada una de las funciones que necesite  
