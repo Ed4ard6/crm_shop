@@ -143,6 +143,23 @@ def actualizar_cantidad_disponible(id_factura):
     cursor.execute(query)
     detalles_factura = cursor.fetchall()
 
+    # Actualizar la cantidad disponible de cada producto en la tabla producto
+    for detalle in detalles_factura:
+        id_producto = detalle[0]
+        cantidad_vendida = detalle[1]
+        query = f"UPDATE producto SET cantidad = cantidad - {cantidad_vendida} WHERE id = {id_producto};"
+        cursor.execute(query)
+
+        # Verificar si la cantidad disponible es igual a 0 y actualizar el estado del producto
+        query = f"SELECT cantidad FROM producto WHERE id = {id_producto};"
+        cursor.execute(query)
+        cantidad_disponible = cursor.fetchone()[0]
+        if cantidad_disponible == 0:
+            query = f"UPDATE producto SET estado = 'Agotado' WHERE id = {id_producto};"
+            cursor.execute(query)
+
+    conexion.commit()
+
 def precio_producto(id_producto):
     dato = id_producto
     consulta = f"SELECT precio_venta FROM producto WHERE id = {dato}"
